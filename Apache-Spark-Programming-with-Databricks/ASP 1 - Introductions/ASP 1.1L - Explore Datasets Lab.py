@@ -35,8 +35,7 @@
 
 # COMMAND ----------
 
-# TODO
-<FILL_IN>
+# MAGIC %fs ls dbfs:/databricks-datasets
 
 # COMMAND ----------
 
@@ -49,8 +48,16 @@
 # COMMAND ----------
 
 # TODO
-files = dbutils.FILL_IN
+files = dbutils.fs.ls("dbfs:/databricks-datasets")
 display(files)
+
+# COMMAND ----------
+
+display(dbutils.fs.ls("dbfs:/user/simen.aakhus@avanade.com/dbacademy/aspwd/datasets/events/events.delta"))
+
+# COMMAND ----------
+
+dbutils.fs.help()
 
 # COMMAND ----------
 
@@ -64,8 +71,41 @@ display(files)
 
 # COMMAND ----------
 
+spark.sql(f"SET c.users_path = {users_path}") #Declares the python variable as a variable in the spark context which SQL commands can acce
+spark.sql(f"SET c.sales_path = {sales_path}")
+spark.sql(f"SET c.products_path = {products_path}")
+spark.sql(f"SET c.events_path = {events_path}")
+
+# COMMAND ----------
+
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC CREATE TABLE IF NOT EXISTS users
+# MAGIC USING DELTA
+# MAGIC OPTIONS (path "${c.users_path}");
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS sales
+# MAGIC USING DELTA
+# MAGIC OPTIONS (path "${c.sales_path}");
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS products --another variation that works according to https://docs.databricks.com/spark/2.x/spark-sql/language-manual/create-table.html
+# MAGIC USING DELTA
+# MAGIC LOCATION "${c.products_path}";
+# MAGIC 
+# MAGIC CREATE TABLE IF NOT EXISTS events --example pointing directly to path, rather than using parameter
+# MAGIC USING DELTA
+# MAGIC LOCATION "dbfs:/user/simen.aakhus@avanade.com/dbacademy/aspwd/datasets/events/events.delta";
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC DROP TABLE users;
+# MAGIC DROP TABLE sales;
+# MAGIC DROP TABLE products;
+# MAGIC DROP TABLE events;
+
+# COMMAND ----------
+
+print(database_name)
 
 # COMMAND ----------
 
@@ -101,7 +141,8 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC select DISTINCT name from products
+# MAGIC ORDER BY name ASC
 
 # COMMAND ----------
 
@@ -127,7 +168,12 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC select AVG(purchase_revenue_in_usd) AS average_purchase from sales;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select CAST(AVG(purchase_revenue_in_usd) as numeric(10,2)) AS average_purchase from sales; --format with only 2 decimals
 
 # COMMAND ----------
 
@@ -156,7 +202,8 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC select DISTINCT event_name from events
+# MAGIC ORDER BY event_name ASC
 
 # COMMAND ----------
 
