@@ -148,3 +148,37 @@ events_output_path = working_dir + "/delta/events"
  .save(events_output_path)
 )
 #reference: https://spark.apache.org/docs/3.1.1/api/java/org/apache/spark/sql/DataFrameWriter.html
+
+# COMMAND ----------
+
+#DataFrames and Columns
+
+#Construct a new column in of three ways
+print(events_df.device)
+print(events_df["device"])
+print(col("device"))
+
+#Column expressions in context of Dataframe
+rev_df = (events_df
+         .filter(col("ecommerce.purchase_revenue_in_usd").isNotNull())
+         .withColumn("purchase_revenue", (col("ecommerce.purchase_revenue_in_usd") * 100).cast("int")) #Create a new column
+         .withColumn("avg_purchase_revenue", col("ecommerce.purchase_revenue_in_usd") / col("ecommerce.total_item_quantity"))
+         .sort(col("avg_purchase_revenue").desc())
+        )
+
+
+#Select a list of SQL expressions
+apple_df = events_df.selectExpr("user_id", "device in ('macOS', 'iOS') as apple_user")
+display(apple_df)
+
+#Drop column using .drop(column_name)
+
+
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC List of useful operatations
+# MAGIC Methods
+# MAGIC - DataFrame: select, selectExpr, drop, withColumn, withColumnRenamed, filter, distinct, limit, sort
+# MAGIC - Column: alias, isin, cast, isNotNull, desc, operators
