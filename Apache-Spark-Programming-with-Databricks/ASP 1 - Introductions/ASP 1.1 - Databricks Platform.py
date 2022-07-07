@@ -153,6 +153,10 @@ displayHTML(html)
 
 # COMMAND ----------
 
+# MAGIC %fs ls
+
+# COMMAND ----------
+
 # MAGIC %fs ls /databricks-datasets
 
 # COMMAND ----------
@@ -201,6 +205,10 @@ display(files)
 
 files = dbutils.fs.ls(events_path)
 display(files)
+
+# COMMAND ----------
+
+# MAGIC %fs ls /user/simen.aakhus@avanade.com/dbacademy/aspwd/datasets/events
 
 # COMMAND ----------
 
@@ -259,6 +267,14 @@ print(database_name)
 # MAGIC SELECT traffic_source, SUM(ecommerce.purchase_revenue_in_usd) AS total_revenue
 # MAGIC FROM events
 # MAGIC GROUP BY traffic_source
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT device, count(event_timestamp) AS number_of_devices
+# MAGIC FROM events
+# MAGIC GROUP BY device
+# MAGIC ORDER BY number_of_devices DESC
 
 # COMMAND ----------
 
